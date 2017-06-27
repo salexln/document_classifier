@@ -5,9 +5,8 @@ import os
 import csv
 from pandas import DataFrame
 from sklearn.model_selection import train_test_split
-import numpy
 from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.naive_bayes import MultinomialNB
+from sklearn.naive_bayes import MultinomialNB, BernoulliNB
 from sklearn.metrics import accuracy_score
 
 
@@ -42,8 +41,11 @@ def get_files_classification(path):
                 header = False
                 continue
 
-            doc_id = line.split(',')[0]
-            doc_class = line.split(',')[1]
+            doc_id = int(line.split(',')[0])
+            doc_class = int(line.split(',')[1])
+            if doc_class != 1:
+                doc_class = 0
+
             classes.append((doc_id, doc_class))
 
             # if idx > 20:
@@ -72,7 +74,8 @@ def classify_data_frame(df):
     counts = count_vectorizer.fit_transform(X_train.values)
 
     # train:
-    classifier = MultinomialNB()
+    # classifier = MultinomialNB()
+    classifier = BernoulliNB()
     targets = y_train.values
     classifier.fit(counts, targets)
 
