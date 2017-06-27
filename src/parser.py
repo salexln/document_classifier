@@ -79,7 +79,6 @@ def classify_data_frame(df):
     targets = y_train.values
     classifier.fit(counts, targets)
 
-
     # test:
     test = count_vectorizer.transform(X_test)
     predictions = classifier.predict(test)
@@ -90,13 +89,9 @@ def classify_data_frame(df):
     print accuracy_score(predictions, y_test.values)
 
 
-
 if __name__ == '__main__':
     data_path = '../data/docs'
     files = get_all_files(path=data_path)
-
-
-
 
 
     data = []
