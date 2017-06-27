@@ -4,109 +4,85 @@ import codecs
 import os
 import csv
 from pandas import DataFrame
-from sklearn.model_selection import train_test_split
-from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.naive_bayes import MultinomialNB, BernoulliNB
-from sklearn.metrics import accuracy_score
+from data_frame_classifier import DataFrameClassifier
 
 
+class DocsParser(object):
+    def __init__(self, docs, labels, quick):
+        self._docs_path = docs
+        self._labels_path = labels
+        self._quick = quick
+        self._data = []
+        self._df = None
+        self._test = None
+        self._predictions = None
+        self._labels = []
+        self._y_test = None
+        self._classifier = None
 
-def html_to_text(path):
-    with codecs.open(path, 'r', 'utf-8') as html_file:
-        document = BeautifulSoup(html_file.read()).getText()
-        return document
+    def _html_to_text(self, path):
+        with codecs.open(path, 'r', 'utf-8') as html_file:
+            document = BeautifulSoup(html_file.read()).getText()
+            return document
 
-# text = html_to_text('../data/docs/9.html')
+    def _get_data_files(self):
+        files_path = []
+        files = os.listdir(self._docs_path)
 
+        for idx, file in enumerate(files):
+            files_path.append(os.path.join(self._docs_path, file))
 
-def get_all_files(path):
-    files_path = []
-    files = os.listdir(path)
+            if idx > 19 and self._quick:
+                break
+        return files_path
 
-    for idx, file in enumerate(files):
-        files_path.append(os.path.join(path, file))
-        # if idx > 19:
-        #     break
-    return files_path
+    def _get_labels(self):
+        with open(self._labels_path, 'r') as file:
+            lines = file.readlines()
+            header = True
+            for idx, line in enumerate(lines):
+                if header:
+                    header = False
+                    continue
 
+                doc_id = int(line.split(',')[0])
+                doc_class = int(line.split(',')[1])
+                if doc_class != 1:
+                    doc_class = 0
 
-def get_files_classification(path):
-    classes = []
-    with open(path, 'r') as file:
-        lines = file.readlines()
+                self._labels.append((doc_id, doc_class))
 
-        header = True
-        for idx, line in enumerate(lines):
-            if header:
-                header = False
-                continue
+                if idx > 20 and self._quick:
+                    break
 
-            doc_id = int(line.split(',')[0])
-            doc_class = int(line.split(',')[1])
-            if doc_class != 1:
-                doc_class = 0
+    def _build_data_frame(self):
+        rows = []
 
-            classes.append((doc_id, doc_class))
+        for idx, doc in enumerate(self._data):
+            rows.append({'text': doc, 'class': self._labels[idx][1]})
 
-            # if idx > 20:
-            #     break
+        data_frame = DataFrame(rows)
+        self._df = data_frame
 
-        return classes
+    def prepare_data(self):
+            files = self._get_data_files()
 
+            for file in files:
+                text = self._html_to_text(file)
+                self._data.append(text)
 
-def build_data_frame(docs, classification):
-    rows = []
+            print 'number of files:', len(files)
+            print 'data len:', len(self._data)
 
-    for idx, doc in enumerate(docs):
-        rows.append({'text': doc, 'class': classification[idx][1]})
+            self._get_labels()
+            print 'Number of labels:', len(self._labels)
 
-    data_frame = DataFrame(rows)
-    return data_frame
+            # import pdb; pdb.set_trace()
+            self._build_data_frame()
 
+    def classify(self):
+        self._classifier = DataFrameClassifier(data_frame=self._df)
+        self._classifier.classify_data_frame()
 
-def classify_data_frame(df):
-    x = df['text']
-    y = df['class']
-    X_train, X_test, y_train, y_test = train_test_split(x, y, random_state=0)
-    print len(X_train), len(X_test), len(y_train), len(y_test)
-
-    count_vectorizer = CountVectorizer()
-    counts = count_vectorizer.fit_transform(X_train.values)
-
-    # train:
-    # classifier = MultinomialNB()
-    classifier = BernoulliNB()
-    targets = y_train.values
-    classifier.fit(counts, targets)
-
-    # test:
-    test = count_vectorizer.transform(X_test)
-    predictions = classifier.predict(test)
-
-    print predictions
-    print y_test.values
-
-    print accuracy_score(predictions, y_test.values)
-
-
-if __name__ == '__main__':
-    data_path = '../data/docs'
-    files = get_all_files(path=data_path)
-
-
-    data = []
-    for file in files:
-        text = html_to_text(file)
-        data.append(text)
-
-    print 'number of files:', len(files)
-    print 'data len:', len(data)
-
-    res_path = '../data/File_Classification.csv'
-    classes = get_files_classification(path=res_path)
-
-    print 'number of classes:', len(classes)
-
-    df = build_data_frame(docs=data, classification=classes)
-
-    classify_data_frame(df=df)
+    def print_results(self):
+        self._classifier.print_results()
