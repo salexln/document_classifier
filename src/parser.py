@@ -68,8 +68,7 @@ class DocsParser(object):
     def prepare_data(self):
             files = self._get_data_files()
 
-            for file in files:
-                # import pdb; pdb.set_trace()
+            for file in files:                
                 text = self._html_to_text(file)
                 self._clean_text(text=text)
                 self._data.append(text)
@@ -80,7 +79,6 @@ class DocsParser(object):
             self._get_labels()
             print 'Number of labels:', len(self._labels)
 
-            # import pdb; pdb.set_trace()
             self._build_data_frame()
 
     def _clean_text(self, text):
@@ -92,8 +90,8 @@ class DocsParser(object):
                 temp_text += ' '
             text = temp_text
 
-    def classify(self):
-        self._classifier = DataFrameClassifier(data_frame=self._df)
+    def classify(self, model):
+        self._classifier = DataFrameClassifier(data_frame=self._df, model=model)
         self._classifier.classify_data_frame()
 
     def print_results(self):

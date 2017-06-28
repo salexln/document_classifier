@@ -3,7 +3,7 @@
 This classifier classifies input documents into info labels.
   - Classifies using Bernoulli NaiveBayes
   - Supports only binary classification for now
-  - Accuracy score is 51.34 % !!!   
+  - Accuracy score is 53 % !!!   
 
 ### How to run:
 ##### input params:
@@ -12,6 +12,10 @@ This classifier classifies input documents into info labels.
   - --labels   Classification file (CSV)
   - --quick    Quick run for testing / debug (not on all data) (default: False)
   - --clean Cleans the docs from stopwords and junk (will run slower)
+  - --model supports the following models:
+    - BernoulliNB (default)
+    - MultinomialNB
+    - KNN
 ##### Command example:
 python document_classifier.py --docs docs/ --labels classification.csv --quick --clean
 

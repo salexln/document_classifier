@@ -17,13 +17,15 @@ Depandencies:
 @argh.arg('--labels', help='Classification file (CSV)', type=str, required=True)
 @argh.arg('--quick', help='Quick run for testing / debug (not on all data)', default=False)
 @argh.arg('--clean', help='Cleans the docs from stopwords and junk (will run slower)', default=False)
+@argh.arg('--model', help='ML model: MultinomialNB, BernoulliNB, KNN (default is BernoulliNB)', type=str, required=False)
 def main(**kwargs):
     parser = DocsParser(docs=kwargs['docs'],
                         labels=kwargs['labels'],
                         quick=kwargs['quick'],
                         clean=kwargs['clean'])
+
     parser.prepare_data()
-    parser.classify()
+    parser.classify(model=kwargs['model'])
     parser.print_results()
 
 
