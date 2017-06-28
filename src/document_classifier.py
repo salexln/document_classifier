@@ -15,11 +15,13 @@ Depandencies:
 
 @argh.arg('--docs', help='Document directory', type=str, required=True)
 @argh.arg('--labels', help='Classification file (CSV)', type=str, required=True)
-@argh.arg('--quick', help='Quick run for testing (not on all data)', default=False)
+@argh.arg('--quick', help='Quick run for testing / debug (not on all data)', default=False)
+@argh.arg('--clean', help='Cleans the docs from stopwords and junk (will run slower)', default=False)
 def main(**kwargs):
     parser = DocsParser(docs=kwargs['docs'],
                         labels=kwargs['labels'],
-                        quick=kwargs['quick'])
+                        quick=kwargs['quick'],
+                        clean=kwargs['clean'])
     parser.prepare_data()
     parser.classify()
     parser.print_results()

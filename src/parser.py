@@ -8,10 +8,11 @@ from data_frame_classifier import DataFrameClassifier
 
 
 class DocsParser(object):
-    def __init__(self, docs, labels, quick):
+    def __init__(self, docs, labels, quick, clean):
         self._docs_path = docs
         self._labels_path = labels
         self._quick = quick
+        self._clean = clean
         self._data = []
         self._df = None
         self._test = None
@@ -68,7 +69,9 @@ class DocsParser(object):
             files = self._get_data_files()
 
             for file in files:
+                # import pdb; pdb.set_trace()
                 text = self._html_to_text(file)
+                self._clean_text(text=text)
                 self._data.append(text)
 
             print 'number of files:', len(files)
@@ -79,6 +82,15 @@ class DocsParser(object):
 
             # import pdb; pdb.set_trace()
             self._build_data_frame()
+
+    def _clean_text(self, text):
+        if self._clean:
+            temp_text = ''
+            for word in text.split(' '):
+                word = word.strip()
+                temp_text += word
+                temp_text += ' '
+            text = temp_text
 
     def classify(self):
         self._classifier = DataFrameClassifier(data_frame=self._df)

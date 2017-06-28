@@ -12,8 +12,8 @@ class DataFrameClassifier(object):
     def classify_data_frame(self):
         x = self._data_frame['text']
         y = self._data_frame['class']
-        X_train, X_test, y_train, y_test = train_test_split(x, y, random_state=0,
-                                                            test_size=0.1)
+        X_train, X_test, y_train, y_test = train_test_split(x, y, random_state=0)
+
         print len(X_train), len(X_test), len(y_train), len(y_test)
         self._y_test = y_test
         count_vectorizer = CountVectorizer()
