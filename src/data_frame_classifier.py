@@ -1,9 +1,10 @@
 from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.naive_bayes import MultinomialNB, BernoulliNB
+from sklearn.naive_bayes import BernoulliNB
 from sklearn.metrics import accuracy_score
 from sklearn import neighbors
-
+from sklearn import linear_model
+from sklearn import svm
 
 
 class DataFrameClassifier(object):
@@ -23,11 +24,14 @@ class DataFrameClassifier(object):
         if self._model == 'BernoulliNB':
             self._classifier = BernoulliNB()
             return
-        elif self._model == 'MultinomialNB':
-            self._classifier = MultinomialNB()
+        elif self._model == 'LogisticRegression':
+            self._classifier = linear_model.LogisticRegression(C=1e5)
             return
         elif self._model == 'KNN':
             self._classifier = neighbors.KNeighborsClassifier()
+            return
+        elif self._model == 'SVM':
+            self._classifier = svm.SVC()
             return
         raise Exception('No model was found')
 
@@ -35,20 +39,17 @@ class DataFrameClassifier(object):
         print '**** Classifing using {} model ****'.format(self._model)
         x = self._data_frame['text']
         y = self._data_frame['class']
-        X_train, X_test, y_train, y_test = train_test_split(x, y, random_state=0)
+        X_train, X_test, y_train, y_test = train_test_split(x, y, random_state=0, test_size=0.2)
 
         print len(X_train), len(X_test), len(y_train), len(y_test)
         self._y_test = y_test
         count_vectorizer = CountVectorizer()
         counts = count_vectorizer.fit_transform(X_train.values)
 
-
         self._train(x=counts, y=y_train.values)
 
         test = count_vectorizer.transform(X_test)
         self._test(test=test)
-
-
 
     def _train(self, x, y):
         self._classifier.fit(x, y)

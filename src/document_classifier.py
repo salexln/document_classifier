@@ -17,7 +17,7 @@ Depandencies:
 @argh.arg('--labels', help='Classification file (CSV)', type=str, required=True)
 @argh.arg('--quick', help='Quick run for testing / debug (not on all data)', default=False)
 @argh.arg('--clean', help='Cleans the docs from stopwords and junk (will run slower)', default=False)
-@argh.arg('--model', help='ML model: MultinomialNB, BernoulliNB, KNN (default is BernoulliNB)', type=str, required=False)
+@argh.arg('--model', help='ML model: MultinomialNB, LogisticRegression, KNN, SVM (default is BernoulliNB)', type=str, required=False)
 def main(**kwargs):
     parser = DocsParser(docs=kwargs['docs'],
                         labels=kwargs['labels'],

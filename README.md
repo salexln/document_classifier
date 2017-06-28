@@ -14,8 +14,9 @@ This classifier classifies input documents into info labels.
   - --clean Cleans the docs from stopwords and junk (will run slower)
   - --model supports the following models:
     - BernoulliNB (default)
-    - MultinomialNB
+    - LogisticRegression
     - KNN
+    - SVM
 ##### Command example:
 python document_classifier.py --docs docs/ --labels classification.csv --quick --clean
 
