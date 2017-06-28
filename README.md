@@ -15,7 +15,7 @@ This classifier classifies input documents into info labels.
 #### Command example:
 python document_classifier.py --docs docs/ --labels classification.csv --quick --clean
 
-# python depandencies:
+### python depandencies:
 These are the python depandencies that you need to have insall in order to run the classifier:
  - argh
  - pandas
