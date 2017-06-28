@@ -12,7 +12,7 @@ This classifier classifies input documents into info labels.
   - --labels   Classification file (CSV)
   - --quick    Quick run for testing / debug (not on all data) (default: False)
   - --clean Cleans the docs from stopwords and junk (will run slower)
-#### Command example:
+##### Command example:
 python document_classifier.py --docs docs/ --labels classification.csv --quick --clean
 
 ### python depandencies:
